@@ -1,0 +1,2 @@
+// GPT serverless endpoint placeholder
+export async function handler(event, context){ const {prompt}=JSON.parse(event.body); return { statusCode:200, body:JSON.stringify({reply:`AI Assistant: Advice on ${prompt}`}) }; }
