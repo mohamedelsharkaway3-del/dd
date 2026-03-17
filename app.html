@@ -1869,8 +1869,65 @@ function scheduleAutoDistribution() {
     }
     scheduleAutoDistribution(); // Schedule next day
   }, ms);
+}function welcomeUser() {
+  try {
+    const user = JSON.parse(sessionStorage.getItem('onvo_user') || '{}');
+    const name = user.name || 'المستخدم';
+    const msg = `أهلاً ${name}!`;
+    const utterance = new SpeechSynthesisUtterance(msg);
+    utterance.lang = 'ar-SA';
+    utterance.rate = 1;
+    utterance.pitch = 1.2;
+    speechSynthesis.speak(utterance);
+  } catch (err) {
+    console.error('TTS error:', err);
+  }
 }
 
+welcomeUser();
+
 </script>
-</body>
+</body>createModal('إضافة مستخدم جديد', `
+  <input id="new-user-username" placeholder="اسم المستخدم"/>
+  <input id="new-user-password" placeholder="كلمة المرور"/>
+  <select id="new-user-role">
+    <option value="user">User</option>
+    <option value="marketing-lead">Marketing Lead</option>
+    <option value="sales-lead">Sales Lead</option>
+    <option value="account-manager">Account Manager</option>
+  </select>
+`, async () => {
+  const username = document.getElementById('new-user-username').value;
+  const password = document.getElementById('new-user-password').value;
+  const role = document.getElementById('new-user-role').value;
+
+  await supabase.auth.signUp({ email: `${username}@onvo.local`, password });
+  await supabase.from('users').insert([{ username, role }]);
+});const rolesByTeam = {
+  Marketing: ['Marketing Lead', 'Content Creator', 'Copywriter'],
+  Sales: ['Sales Lead', 'Sales Executive', 'Account Manager'],
+  Management: ['Founder', 'Director', 'Supervisor'],
+  Support: ['Support Lead', 'Support Agent'],
+  Development: ['Dev Lead', 'Frontend', 'Backend', 'Fullstack']
+};const currentUser = JSON.parse(sessionStorage.getItem('onvo_user') || '{}');
+
+function hasPermission(requiredRoles) {
+  return requiredRoles.includes(currentUser.role);
+}
+
+document.getElementById('add-user-btn').style.display = hasPermission(['Founder','Director','Manager']) ? 'block' : 'none';document.querySelectorAll('.card-3d').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * 10;
+    const rotateY = ((x - centerX) / centerX) * 10;
+    card.style.transform = `rotateX(${-rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+  });
+});
 </html>
