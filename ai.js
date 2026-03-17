@@ -115,7 +115,25 @@ function escapeHtml(str) {
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-function formatAIReply(text) {
+function formatAIReply(text) {// ترحيب صوتي عند تسجيل الدخول
+function welcomeUser() {
+  try {
+    const user = JSON.parse(sessionStorage.getItem('onvo_user') || '{}');
+    const name = user.name || 'المستخدم';
+    const msg = `أهلاً ${name}!`;
+
+    const utterance = new SpeechSynthesisUtterance(msg);
+    utterance.lang = 'ar-SA';  // عربي
+    utterance.rate = 1;         // سرعة الكلام
+    utterance.pitch = 1.2;      // طبقة الصوت
+    speechSynthesis.speak(utterance);
+  } catch (err) {
+    console.error('TTS error:', err);
+  }
+}
+
+// استدعاء الدالة بعد تسجيل الدخول
+welcomeUser();
   return escapeHtml(text)
     .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
     .replace(/\n/g,'<br>');
