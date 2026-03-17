@@ -57,3 +57,10 @@ function createModal(title, contentHTML, onSaveCallback) {
     card.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
   });
 }
+const currentUser = JSON.parse(sessionStorage.getItem('onvo_user') || '{}');
+
+function hasPermission(requiredRoles) {
+  return requiredRoles.includes(currentUser.role);
+}
+
+document.getElementById('add-user-btn').style.display = hasPermission(['Founder','Director','Manager']) ? 'block' : 'none';
