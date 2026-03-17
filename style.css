@@ -964,3 +964,14 @@ body { transition:background .5s,color .5s; }
   .stats-grid{grid-template-columns:1fr 1fr;}
   .planner-grid{grid-template-columns:repeat(4,1fr);}
 }
+.card-3d {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-3d:hover {
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(99,102,241,0.15);
+}
+.card-3d:active {
+  transform: scale(0.98);
+}
